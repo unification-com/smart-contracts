@@ -32,6 +32,9 @@ namespace UnificationFoundation {
         void addhash(account_name schema_name, uint64_t schema_vers, uint64_t timestamp, std::string data_hash);
 
         //@abi action
+        void setexternal(account_name requesting_app, std::string public_key_hash);
+
+        //@abi action
         void setrewards(uint64_t user_amt, uint64_t app_amt);
 
     private:
@@ -54,6 +57,19 @@ namespace UnificationFoundation {
         //https://github.com/EOSIO/eos/wiki/Persistence-API#multi-index-constructor
         //eosio::multi_index<N([name_match_abi]), [name_match_struct]> [anything];
         typedef eosio::multi_index<N(permrecords), permrecords> unifperms;
+
+        //@abi table externaldata i64
+        struct externaldata {
+            uint8_t pkey;
+            std::string public_key;
+            uint64_t primary_key() const { return pkey; }
+
+            EOSLIB_SERIALIZE(externaldata, (pkey)(public_key))
+        };
+
+        //https://github.com/EOSIO/eos/wiki/Persistence-API#multi-index-constructor
+        //eosio::multi_index<N([name_match_abi]), [name_match_struct]> [anything];
+        typedef eosio::multi_index<N(externaldata), externaldata> unifexternaldata;
 
         //@abi table dataschemas i64
         struct dataschemas {
@@ -125,5 +141,5 @@ namespace UnificationFoundation {
 
     };
 
-    EOSIO_ABI(unification_acl, (grant)(revoke)(check)(setschema)(setsource)(addhash)(setrewards))
+    EOSIO_ABI(unification_acl, (grant)(revoke)(check)(setschema)(setsource)(addhash)(setexternal)(setrewards))
 }

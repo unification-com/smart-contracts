@@ -200,6 +200,17 @@ namespace UnificationFoundation {
         }
     }
 
+    void unification_acl::setexternal(const account_name requesting_app, const std::string public_key_hash) {
+        require_auth(_self);
+
+        unifexternaldata u_externaldata(_self, requesting_app);
+
+        u_externaldata.emplace(_self, [&]( auto& h_rec ) {
+            h_rec.pkey = requesting_app;
+            h_rec.public_key = public_key_hash;
+        });
+    }
+
     void unification_acl::addhash(const account_name schema_name,
                                    const uint64_t schema_vers,
                                    const uint64_t timestamp,
