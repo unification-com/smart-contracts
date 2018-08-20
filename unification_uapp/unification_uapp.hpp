@@ -14,10 +14,7 @@ namespace UnificationFoundation {
         explicit unification_uapp(action_name self);
 
         //@abi action
-        void grant(account_name user_account, account_name requesting_app);
-
-        //@abi action
-        void revoke(account_name user_account, account_name requesting_app);
+        void modifyperm(account_name user_account, account_name requesting_app, uint8_t level);
 
         //@abi action
         void addschema(std::string schema, uint8_t schema_vers, uint8_t schedule, uint8_t min_und);
@@ -32,8 +29,6 @@ namespace UnificationFoundation {
         void updatereq(uint64_t pkey, std::string hash, std::string aggr);
 
     private:
-
-        void set_permission(account_name user_account, account_name requesting_app, int permission);
 
         //@abi table permrecords i64
         struct permrecords {
@@ -89,5 +84,5 @@ namespace UnificationFoundation {
 
     };
 
-    EOSIO_ABI(unification_uapp, (grant)(revoke)(addschema)(editschema)(initreq)(updatereq))
+    EOSIO_ABI(unification_uapp, (modifyperm)(addschema)(editschema)(initreq)(updatereq))
 }

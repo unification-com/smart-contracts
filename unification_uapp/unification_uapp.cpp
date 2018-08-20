@@ -23,32 +23,9 @@ namespace UnificationFoundation {
 
     unification_uapp::unification_uapp(action_name self) : contract(self) {}
 
-    void unification_uapp::grant(const account_name user_account,
-                                const account_name requesting_app) {
+    void unification_uapp::modifyperm(account_name user_account, account_name requesting_app, uint8_t level) {
 
-        eosio::print(name{user_account}, " Called grant()");
-
-        // make sure authorised by user. Only user can grant access to their data
-        require_auth(user_account);
-
-        set_permission(user_account,requesting_app,1);
-    }
-
-    void unification_uapp::revoke(const account_name user_account,
-                                 const account_name requesting_app) {
-
-        eosio::print(name{user_account}, " Called revoke()");
-
-        // make sure authorised by user. Only user can revoke access to their data
-        require_auth(user_account);
-
-        set_permission(user_account,requesting_app,0);
-
-    }
-
-    void unification_uapp::set_permission(const account_name user_account, const account_name requesting_app, int permission) {
-
-        // make sure authorised by user. Only user can revoke access to their data
+        // make sure authorised by user. Only user can modify access to their data
         require_auth(user_account);
 
         // code, scope. Scope = requesting app.
@@ -57,16 +34,14 @@ namespace UnificationFoundation {
         auto itr = perms.find(user_account);
         if (itr == perms.end()) {
             //no record for requesting app exists yet. Create one
-            eosio::print(name{user_account}, " added ",permission," record for ", name{requesting_app});
             perms.emplace(_self /*payer*/, [&](auto &p_rec) {
                 p_rec.user_account = user_account;
-                p_rec.permission_granted = permission;
+                p_rec.permission_granted = level;
             });
         } else {
             //requesting app already has record for user. Update its user perms
-            eosio::print(name{user_account}, " set access to ",permission," for ", name{requesting_app});
             perms.modify(itr, _self /*payer*/, [&](auto &p_rec) {
-                p_rec.permission_granted = permission;
+                p_rec.permission_granted = level;
             });
         }
     }
