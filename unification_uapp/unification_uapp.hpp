@@ -54,7 +54,7 @@ namespace UnificationFoundation {
         //@abi table dataschemas i64
         struct dataschemas {
             uint64_t pkey;
-            std::string schema;
+            std::string schema; //IPFS Hash etc.
             uint8_t schema_vers; //0 = dev, 1 = prod
             uint8_t schedule; //1 = daily, 2 = weekly, 3 = monthly
             uint8_t min_und;
