@@ -58,7 +58,7 @@ namespace UnificationFoundation {
         void setschema(const uint64_t& pkey,const std::string& schema);
 
         //@abi action
-        void initreq(const uint64_t& source_name,
+        void initreq(const account_name& provider_name,
                      const uint64_t& schema_id,
                      const uint8_t& req_type,
                      const std::string& query,
@@ -66,6 +66,7 @@ namespace UnificationFoundation {
 
         //@abi action
         void updatereq(const uint64_t& pkey,
+                       const account_name& provider_name,
                        const std::string& hash,
                        const std::string& aggr);
 
@@ -74,7 +75,7 @@ namespace UnificationFoundation {
         //@abi table permrecords i64
         struct permrecords {
             uint64_t user_account; //user account ID
-            uint8_t permission_granted; //whether or not user has granted access.
+            uint8_t permission_granted; //level of access a user has granted access.
             //https://github.com/EOSIO/eos/blob/15953cc1be7a4d4ff168d0235dbaba9464033b70/libraries/chain/contracts/abi_serializer.cpp#L56
 
             uint64_t primary_key() const { return user_account; }
@@ -105,7 +106,7 @@ namespace UnificationFoundation {
         //@abi table datareqs i64
         struct datareqs {
             uint64_t pkey;
-            uint64_t source_name; //account name of provider's UApp smart contract
+            uint64_t provider_name; //account name of provider's UApp smart contract
             uint64_t schema_id; //fkey link to provider's schema
             uint8_t req_type; //0 = scheduled, 1 = ad-hoc
             std::string query;
@@ -114,10 +115,12 @@ namespace UnificationFoundation {
             std::string hash;
             std::string aggr;
 
+            //TODO: Add timestamps for init, and update
+
 
             uint64_t primary_key() const { return pkey; }
 
-            EOSLIB_SERIALIZE(datareqs, (pkey)(source_name)(schema_id)(req_type)(query)(provider_und)(user_und)(hash)(aggr))
+            EOSLIB_SERIALIZE(datareqs, (pkey)(provider_name)(schema_id)(req_type)(query)(provider_und)(user_und)(hash)(aggr))
         };
 
         typedef eosio::multi_index<N(datareqs), datareqs> unifreqs;

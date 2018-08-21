@@ -187,19 +187,46 @@ namespace UnificationFoundation {
         });
     }
 
-    void unification_uapp::initreq(const uint64_t& source_name,
+    void unification_uapp::initreq(const account_name& provider_name,
                                    const uint64_t& schema_id,
                                    const uint8_t& req_type,
                                    const std::string& query,
                                    const uint8_t& user_und) {
 
+        require_auth(_self);
 
+        unifreqs data_requests(_self, _self);
+
+        data_requests.emplace(_self, [&]( auto& d_rec ) {
+            d_rec.pkey = data_requests.available_primary_key();
+            d_rec.provider_name = provider_name;
+            d_rec.schema_id = schema_id;
+            d_rec.req_type = req_type;
+            d_rec.query = query;
+            d_rec.user_und = user_und;
+        });
 
     }
 
     void unification_uapp::updatereq(const uint64_t& pkey,
+                                     const account_name& provider_name,
                                      const std::string& hash,
                                      const std::string& aggr) {
+
+        require_auth(provider_name); //only provider can update this info
+
+        unifreqs data_requests(_self, _self);
+
+        auto itr = data_requests.find(pkey);
+
+        eosio_assert(itr != data_requests.end(), "Data request not found");
+
+        eosio_assert(itr->provider_name == provider_name, "Calling account and provider_name mismatch");
+
+        data_requests.modify(itr, _self /*payer*/, [&](auto &d_rec) {
+            d_rec.hash = hash;
+            d_rec.aggr = aggr;
+        });
 
     }
 
