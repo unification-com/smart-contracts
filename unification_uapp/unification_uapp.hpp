@@ -4,6 +4,7 @@
  */
 
 #include <regex>
+#include <sstream>
 #include <eosiolib/eosio.hpp>
 //#include <eosiolib/time.hpp>
 //#include <eosiolib/asset.hpp>
@@ -25,9 +26,9 @@ namespace UnificationFoundation {
         //@abi action
         void modifypermsg(const account_name& user_account,
                           const account_name& requesting_app,
-                          const uint8_t& level,
+                          const std::string& level,
                           const checksum256& digest,
-                          const std::string& sig,
+                          const signature& sig,
                           const public_key& pub);
 
 

@@ -50,18 +50,21 @@ namespace UnificationFoundation {
 
     void unification_uapp::modifypermsg(const account_name& user_account,
                                         const account_name& requesting_app,
-                                        const uint8_t& level,
+                                        const std::string& level,
                                         const checksum256& digest,
-                                        const std::string& sig,
+                                        const signature& sig,
                                         const public_key& pub) {
 
         require_auth(_self);
 
-        char* sigchar = new char[sig.size() + 1];
-        std::copy(sig.begin(), sig.end(), sigchar);
-        sigchar[sig.size()] = '\0';
+        assert_recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
 
-        assert_recover_key( (const checksum256 *)&digest, sigchar, sizeof(sigchar), (char *)&pub, sizeof(pub) );
+//        const char* lv = level.c_str();
+//
+//        checksum256 calc_hash;
+//        sha256( lv, sizeof(lv), &calc_hash );
+//
+//        eosio_assert( calc_hash == digest, "invalid hash" );
 
         //TODO: check digest == checksum level
 
@@ -73,12 +76,12 @@ namespace UnificationFoundation {
             //no record for requesting app exists yet. Create one
             perms.emplace(_self /*payer*/, [&](auto &p_rec) {
                 p_rec.user_account = user_account;
-                p_rec.permission_granted = level;
+                p_rec.permission_granted = std::stoi(level);
             });
         } else {
             //requesting app already has record for user. Update its user perms
             perms.modify(itr, _self /*payer*/, [&](auto &p_rec) {
-                p_rec.permission_granted = level;
+                p_rec.permission_granted =  std::stoi(level);
             });
         }
 
