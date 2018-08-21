@@ -96,6 +96,13 @@ namespace UnificationFoundation {
                                      const uint8_t& min_und) {
         eosio::print("addschema()");
 
+        eosio_assert((schedule == 1
+                      || schedule == 2
+                      || schedule == 3), "schedule must 1, 2 or 3 for daily, weekly, monthly");
+
+        eosio_assert((schema_vers == 0
+                      || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
+
         //TODO - migrate to require_auth2 with custom permission level
         require_auth(_self);
 
@@ -119,6 +126,13 @@ namespace UnificationFoundation {
         //TODO - migrate to require_auth2 with custom permission level
         require_auth(_self);
 
+        eosio_assert((schedule == 1
+                     || schedule == 2
+                     || schedule == 3), "schedule must 1, 2 or 3 for daily, weekly, monthly");
+
+        eosio_assert((schema_vers == 0
+                      || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
+
         unifschemas u_schema(_self, _self);
 
         auto itr = u_schema.find(pkey);
@@ -138,6 +152,9 @@ namespace UnificationFoundation {
         //TODO - migrate to require_auth2 with custom permission level
         require_auth(_self);
 
+        eosio_assert((schema_vers == 0
+                      || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
+
         unifschemas u_schema(_self, _self);
 
         auto itr = u_schema.find(pkey);
@@ -152,6 +169,10 @@ namespace UnificationFoundation {
     void unification_uapp::setschedule(const uint64_t& pkey,const uint8_t& schedule) {
         //TODO - migrate to require_auth2 with custom permission level
         require_auth(_self);
+
+        eosio_assert((schedule == 1
+                     || schedule == 2
+                     || schedule == 3), "schedule must 1, 2 or 3 for daily, weekly, monthly");
 
         unifschemas u_schema(_self, _self);
 
