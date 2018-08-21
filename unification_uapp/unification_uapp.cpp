@@ -54,19 +54,21 @@ namespace UnificationFoundation {
                                         const checksum256& digest,
                                         const signature& sig,
                                         const public_key& pub) {
-
+        print("modifypermsg()");
         require_auth(_self);
+
+        //Strange.... assert_recover_key only works if recover_key is run first!
+        int rec_key = recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
+        print_f("rec_key: %", rec_key);
 
         assert_recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
 
+        //TODO: check digest == checksum level
 //        const char* lv = level.c_str();
-//
+//        print_f("lv: %", lv);
 //        checksum256 calc_hash;
 //        sha256( lv, sizeof(lv), &calc_hash );
-//
 //        eosio_assert( calc_hash == digest, "invalid hash" );
-
-        //TODO: check digest == checksum level
 
         // code, scope. Scope = requesting app.
         unifperms perms(_self, requesting_app);
