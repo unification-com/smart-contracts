@@ -5,6 +5,10 @@
 
 #include <regex>
 #include <eosiolib/eosio.hpp>
+//#include <eosiolib/time.hpp>
+//#include <eosiolib/asset.hpp>
+#include <eosiolib/contract.hpp>
+#include <eosiolib/crypto.h>
 
 namespace UnificationFoundation {
     using namespace eosio;
@@ -14,19 +18,55 @@ namespace UnificationFoundation {
         explicit unification_uapp(action_name self);
 
         //@abi action
-        void modifyperm(account_name user_account, account_name requesting_app, uint8_t level);
+        void modifyperm(const account_name& user_account,
+                        const account_name& requesting_app,
+                        const uint8_t& level);
 
         //@abi action
-        void addschema(std::string schema, uint8_t schema_vers, uint8_t schedule, uint8_t min_und);
+        void modifypermsg(const account_name& user_account,
+                          const account_name& requesting_app,
+                          const uint8_t& level,
+                          const checksum256& digest,
+                          const std::string& sig,
+                          const public_key& pub);
+
 
         //@abi action
-        void editschema(uint64_t pkey, std::string schema, uint8_t schema_vers, uint8_t schedule, uint8_t min_und);
+        void addschema(const std::string& schema,
+                       const uint8_t& schema_vers,
+                       const uint8_t& schedule,
+                       const uint8_t& min_und);
 
         //@abi action
-        void initreq(uint64_t source_name, uint64_t schema_id, uint8_t req_type, std::string query, uint8_t user_und);
+        void editschema(const uint64_t& pkey,
+                        const std::string& schema,
+                        const uint8_t& schema_vers,
+                        const uint8_t& schedule,
+                        const uint8_t& min_und);
 
         //@abi action
-        void updatereq(uint64_t pkey, std::string hash, std::string aggr);
+        void setvers(const uint64_t& pkey,const uint8_t& schema_vers);
+
+        //@abi action
+        void setschedule(const uint64_t& pkey,const uint8_t& schedule);
+
+        //@abi action
+        void setminund(const uint64_t& pkey,const uint8_t& min_und);
+
+        //@abi action
+        void setschema(const uint64_t& pkey,const std::string& schema);
+
+        //@abi action
+        void initreq(const uint64_t& source_name,
+                     const uint64_t& schema_id,
+                     const uint8_t& req_type,
+                     const std::string& query,
+                     const uint8_t& user_und);
+
+        //@abi action
+        void updatereq(const uint64_t& pkey,
+                       const std::string& hash,
+                       const std::string& aggr);
 
     private:
 
@@ -81,8 +121,7 @@ namespace UnificationFoundation {
 
         typedef eosio::multi_index<N(datareqs), datareqs> unifreqs;
 
-
     };
 
-    EOSIO_ABI(unification_uapp, (modifyperm)(addschema)(editschema)(initreq)(updatereq))
+    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setminund)(setschema)(initreq)(updatereq))
 }
