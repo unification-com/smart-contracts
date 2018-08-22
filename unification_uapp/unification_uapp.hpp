@@ -70,6 +70,9 @@ namespace UnificationFoundation {
                        const std::string& hash,
                        const std::string& aggr);
 
+        //@abi action
+        void setrsakey(std::string rsa_key);
+
     private:
 
         //@abi table permrecords i64
@@ -125,7 +128,19 @@ namespace UnificationFoundation {
 
         typedef eosio::multi_index<N(datareqs), datareqs> unifreqs;
 
+        //@abi table rsapubkey i64
+        struct rsapubkey {
+            uint64_t pkey;
+            std::string rsa_pub_key;
+
+            uint64_t primary_key() const { return pkey; }
+
+            EOSLIB_SERIALIZE(rsapubkey, (pkey)(rsa_pub_key))
+        };
+
+        typedef eosio::multi_index<N(rsapubkey), rsapubkey> unifrsakey;
+
     };
 
-    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setminund)(setschema)(initreq)(updatereq))
+    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setminund)(setschema)(initreq)(updatereq)(setrsakey))
 }

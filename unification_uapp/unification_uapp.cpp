@@ -254,5 +254,24 @@ namespace UnificationFoundation {
 
     }
 
+    void unification_uapp::setrsakey(std::string rsa_key) {
+        require_auth2(_self,N(modrsakey));
+
+        unifrsakey _unifrsakey(_self, _self);
+
+        auto itr = _unifrsakey.find(0);
+
+        if(itr == _unifrsakey.end()) {
+            _unifrsakey.emplace(_self, [&]( auto& rsa_rec ) {
+                rsa_rec.pkey = _unifrsakey.available_primary_key();
+                rsa_rec.rsa_pub_key = rsa_key;
+            });
+        } else {
+            _unifrsakey.modify(itr, _self /*payer*/, [&](auto &rsa_rec) {
+                rsa_rec.rsa_pub_key = rsa_key;
+            });
+        }
+    }
+
 
 }
