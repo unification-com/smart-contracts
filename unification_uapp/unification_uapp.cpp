@@ -55,8 +55,7 @@ namespace UnificationFoundation {
                                         const signature& sig,
                                         const public_key& pub) {
         print("modifypermsg()");
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modperms));
 
         //Strange.... assert_recover_key only works if recover_key is run first!
         int rec_key = recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
@@ -103,8 +102,7 @@ namespace UnificationFoundation {
         eosio_assert((schema_vers == 0
                       || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
 
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -124,7 +122,7 @@ namespace UnificationFoundation {
                                       const uint8_t& min_und) {
 
         //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schedule == 1
                      || schedule == 2
@@ -149,8 +147,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setvers(const uint64_t& pkey,const uint8_t& schema_vers) {
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schema_vers == 0
                       || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
@@ -167,8 +164,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setschedule(const uint64_t& pkey,const uint8_t& schedule) {
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schedule == 1
                      || schedule == 2
@@ -186,8 +182,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setminund(const uint64_t& pkey,const uint8_t& min_und) {
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -201,8 +196,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setschema(const uint64_t& pkey,const std::string& schema) {
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -221,8 +215,7 @@ namespace UnificationFoundation {
                                    const std::string& query,
                                    const uint8_t& user_und) {
 
-        //TODO - migrate to require_auth2 with custom permission level
-        require_auth(_self);
+        require_auth2(_self,N(modreq));
 
         unifreqs data_requests(_self, _self);
 
@@ -243,7 +236,8 @@ namespace UnificationFoundation {
                                      const std::string& aggr) {
 
         //TODO - migrate to require_auth2 with custom permission level
-        require_auth(provider_name); //only provider can update this info
+        //require_auth(provider_name); //only provider can update this info
+        require_auth2(provider_name,N(modreq));
 
         unifreqs data_requests(_self, _self);
 
