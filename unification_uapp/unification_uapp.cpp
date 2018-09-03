@@ -92,7 +92,8 @@ namespace UnificationFoundation {
     void unification_uapp::addschema(const std::string& schema,
                                      const uint8_t& schema_vers,
                                      const uint8_t& schedule,
-                                     const uint8_t& min_und) {
+                                     const uint8_t& price_sched,
+                                     const uint8_t& price_adhoc) {
         eosio::print("addschema()");
 
         eosio_assert((schedule == 1
@@ -111,7 +112,8 @@ namespace UnificationFoundation {
             s_rec.schema = schema;
             s_rec.schedule = schedule;
             s_rec.schema_vers = 0;
-            s_rec.min_und = min_und;
+            s_rec.price_sched = price_sched;
+            s_rec.price_adhoc = price_adhoc;
         });
     }
 
@@ -119,7 +121,8 @@ namespace UnificationFoundation {
                                       const std::string& schema,
                                       const uint8_t& schema_vers,
                                       const uint8_t& schedule,
-                                      const uint8_t& min_und) {
+                                      const uint8_t& price_sched,
+                                      const uint8_t& price_adhoc) {
 
         //TODO - migrate to require_auth2 with custom permission level
         require_auth2(_self,N(modschema));
@@ -141,7 +144,8 @@ namespace UnificationFoundation {
             s_rec.schema = schema;
             s_rec.schedule = schedule;
             s_rec.schema_vers = schema_vers;
-            s_rec.min_und = min_und;
+            s_rec.price_sched = price_sched;
+            s_rec.price_adhoc = price_adhoc;
         });
 
     }
@@ -181,7 +185,7 @@ namespace UnificationFoundation {
         });
     }
 
-    void unification_uapp::setminund(const uint64_t& pkey,const uint8_t& min_und) {
+    void unification_uapp::setpricesch(const uint64_t& pkey,const uint8_t& price_sched) {
         require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
@@ -191,7 +195,21 @@ namespace UnificationFoundation {
         eosio_assert(itr != u_schema.end(), "Schema not found");
 
         u_schema.modify(itr, _self /*payer*/, [&](auto &s_rec) {
-            s_rec.min_und = min_und;
+            s_rec.price_sched = price_sched;
+        });
+    }
+
+    void unification_uapp::setpriceadh(const uint64_t& pkey,const uint8_t& price_adhoc) {
+        require_auth2(_self,N(modschema));
+
+        unifschemas u_schema(_self, _self);
+
+        auto itr = u_schema.find(pkey);
+
+        eosio_assert(itr != u_schema.end(), "Schema not found");
+
+        u_schema.modify(itr, _self /*payer*/, [&](auto &s_rec) {
+            s_rec.price_adhoc = price_adhoc;
         });
     }
 
@@ -213,7 +231,7 @@ namespace UnificationFoundation {
                                    const uint64_t& schema_id,
                                    const uint8_t& req_type,
                                    const std::string& query,
-                                   const uint8_t& user_und) {
+                                   const uint8_t& price) {
 
         require_auth2(_self,N(modreq));
 
@@ -225,7 +243,7 @@ namespace UnificationFoundation {
             d_rec.schema_id = schema_id;
             d_rec.req_type = req_type;
             d_rec.query = query;
-            d_rec.user_und = user_und;
+            d_rec.price = price;
         });
 
     }
@@ -255,6 +273,8 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setrsakey(std::string rsa_key) {
+
+        //Todo: need to verify this works - i.e. provider modifying consumer's contract using this permission
         require_auth2(_self,N(modrsakey));
 
         unifrsakey _unifrsakey(_self, _self);

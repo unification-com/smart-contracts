@@ -36,14 +36,16 @@ namespace UnificationFoundation {
         void addschema(const std::string& schema,
                        const uint8_t& schema_vers,
                        const uint8_t& schedule,
-                       const uint8_t& min_und);
+                       const uint8_t& price_sched,
+                       const uint8_t& price_adhoc);
 
         //@abi action
         void editschema(const uint64_t& pkey,
                         const std::string& schema,
                         const uint8_t& schema_vers,
                         const uint8_t& schedule,
-                        const uint8_t& min_und);
+                        const uint8_t& price_sched,
+                        const uint8_t& price_adhoc);
 
         //@abi action
         void setvers(const uint64_t& pkey,const uint8_t& schema_vers);
@@ -52,7 +54,10 @@ namespace UnificationFoundation {
         void setschedule(const uint64_t& pkey,const uint8_t& schedule);
 
         //@abi action
-        void setminund(const uint64_t& pkey,const uint8_t& min_und);
+        void setpricesch(const uint64_t& pkey,const uint8_t& price_sched);
+
+        //@abi action
+        void setpriceadh(const uint64_t& pkey,const uint8_t& price_adhoc);
 
         //@abi action
         void setschema(const uint64_t& pkey,const std::string& schema);
@@ -62,7 +67,7 @@ namespace UnificationFoundation {
                      const uint64_t& schema_id,
                      const uint8_t& req_type,
                      const std::string& query,
-                     const uint8_t& user_und);
+                     const uint8_t& price);
 
         //@abi action
         void updatereq(const uint64_t& pkey,
@@ -97,11 +102,12 @@ namespace UnificationFoundation {
             std::string schema; //IPFS Hash etc.
             uint8_t schema_vers; //0 = dev, 1 = prod
             uint8_t schedule; //1 = daily, 2 = weekly, 3 = monthly
-            uint8_t min_und;
+            uint8_t price_sched;
+            uint8_t price_adhoc;
 
             uint64_t primary_key() const { return pkey; }
 
-            EOSLIB_SERIALIZE(dataschemas, (pkey)(schema)(schema_vers)(schedule)(min_und))
+            EOSLIB_SERIALIZE(dataschemas, (pkey)(schema)(schema_vers)(schedule)(price_sched)(price_adhoc))
         };
 
         typedef eosio::multi_index<N(dataschemas), dataschemas> unifschemas;
@@ -113,8 +119,7 @@ namespace UnificationFoundation {
             uint64_t schema_id; //fkey link to provider's schema
             uint8_t req_type; //0 = scheduled, 1 = ad-hoc
             std::string query;
-            uint8_t provider_und;
-            uint8_t user_und;
+            uint8_t price;
             std::string hash;
             std::string aggr;
 
@@ -123,7 +128,7 @@ namespace UnificationFoundation {
 
             uint64_t primary_key() const { return pkey; }
 
-            EOSLIB_SERIALIZE(datareqs, (pkey)(provider_name)(schema_id)(req_type)(query)(provider_und)(user_und)(hash)(aggr))
+            EOSLIB_SERIALIZE(datareqs, (pkey)(provider_name)(schema_id)(req_type)(query)(price)(hash)(aggr))
         };
 
         typedef eosio::multi_index<N(datareqs), datareqs> unifreqs;
@@ -142,5 +147,5 @@ namespace UnificationFoundation {
 
     };
 
-    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setminund)(setschema)(initreq)(updatereq)(setrsakey))
+    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setpricesch)(setpriceadh)(setschema)(initreq)(updatereq)(setrsakey))
 }
