@@ -54,13 +54,22 @@ namespace UnificationFoundation {
                                         const checksum256& digest,
                                         const signature& sig,
                                         const public_key& pub) {
-        require_auth(_self);
+        print("modifypermsg()");
+        require_auth2(_self,N(modperms));
+        //require_auth(_self);
 
         //Strange.... assert_recover_key only works if recover_key is run first!
         int rec_key = recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
         print_f("rec_key: %", rec_key);
 
         assert_recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
+
+        //TODO: check digest == checksum level
+//        const char* lv = level.c_str();
+//        print_f("lv: %", lv);
+//        checksum256 calc_hash;
+//        sha256( lv, sizeof(lv), &calc_hash );
+//        eosio_assert( calc_hash == digest, "invalid hash" );
 
         // code, scope. Scope = requesting app.
         unifperms perms(_self, requesting_app);
@@ -78,6 +87,7 @@ namespace UnificationFoundation {
                 p_rec.permission_granted =  std::stoi(level);
             });
         }
+
     }
 
     void unification_uapp::addschema(const std::string& schema,
@@ -85,6 +95,8 @@ namespace UnificationFoundation {
                                      const uint8_t& schedule,
                                      const uint8_t& price_sched,
                                      const uint8_t& price_adhoc) {
+        eosio::print("addschema()");
+
         eosio_assert((schedule == 1
                       || schedule == 2
                       || schedule == 3), "schedule must 1, 2 or 3 for daily, weekly, monthly");
@@ -92,8 +104,7 @@ namespace UnificationFoundation {
         eosio_assert((schema_vers == 0
                       || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
 
-        //require_auth2(_self,N(modschema));
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -113,7 +124,8 @@ namespace UnificationFoundation {
                                       const uint8_t& schedule,
                                       const uint8_t& price_sched,
                                       const uint8_t& price_adhoc) {
-        require_auth(_self);
+
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schedule == 1
                      || schedule == 2
@@ -139,7 +151,8 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setvers(const uint64_t& pkey,const uint8_t& schema_vers) {
-        require_auth(_self);
+
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schema_vers == 0
                       || schema_vers == 1), "schema_vers must 0 or 1 for dev, prod");
@@ -156,7 +169,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setschedule(const uint64_t& pkey,const uint8_t& schedule) {
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         eosio_assert((schedule == 1
                      || schedule == 2
@@ -174,7 +187,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setpricesch(const uint64_t& pkey,const uint8_t& price_sched) {
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -188,7 +201,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setpriceadh(const uint64_t& pkey,const uint8_t& price_adhoc) {
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -202,7 +215,7 @@ namespace UnificationFoundation {
     }
 
     void unification_uapp::setschema(const uint64_t& pkey,const std::string& schema) {
-        require_auth(_self);
+        require_auth2(_self,N(modschema));
 
         unifschemas u_schema(_self, _self);
 
@@ -220,7 +233,8 @@ namespace UnificationFoundation {
                                    const uint8_t& req_type,
                                    const std::string& query,
                                    const uint8_t& price) {
-        require_auth(_self);
+
+        require_auth2(_self,N(modreq));
 
         unifreqs data_requests(_self, _self);
 
@@ -232,13 +246,15 @@ namespace UnificationFoundation {
             d_rec.query = query;
             d_rec.price = price;
         });
+
     }
 
     void unification_uapp::updatereq(const uint64_t& pkey,
                                      const account_name& provider_name,
                                      const std::string& hash,
                                      const std::string& aggr) {
-        require_auth(provider_name);
+
+        require_auth2(provider_name,N(modreq));
 
         unifreqs data_requests(_self, _self);
 
@@ -252,10 +268,13 @@ namespace UnificationFoundation {
             d_rec.hash = hash;
             d_rec.aggr = aggr;
         });
+
     }
 
     void unification_uapp::setrsakey(std::string rsa_key) {
-        require_auth(_self);
+
+        require_auth2(_self,N(modrsakey));
+        //require_auth(_self);
 
         unifrsakey _unifrsakey(_self, _self);
 
@@ -272,4 +291,6 @@ namespace UnificationFoundation {
             });
         }
     }
+
+
 }

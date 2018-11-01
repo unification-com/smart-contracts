@@ -6,6 +6,8 @@
 #include <regex>
 #include <sstream>
 #include <eosiolib/eosio.hpp>
+//#include <eosiolib/time.hpp>
+//#include <eosiolib/asset.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/crypto.h>
 
