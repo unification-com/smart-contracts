@@ -12,16 +12,54 @@ namespace UnificationFoundation {
     using eosio::const_mem_fun;
 
 /**
- *  @defgroup unification_uapp3 Unification Access Control Contract
- *  @brief Defines user controlled access to data
+ *  @defgroup unification_uapp UApp Smart Contract
+ *  @brief Defines user controlled access to data, metadata schemas, data requests
  *
  *  @details
- *  Each app requesting data from THIS app is assigned a container in the contract,
- *  which can contain a growing list of users who have granted them access.
- *  Only users can call the grant/revoke functions to modify their status for a requesting app
+ *  Each Provider and Consumer is required to deploy this smart contract.
+ *  It is used to store metadata about the data a provider is publishing,
+ *  Consumer data requests, and user permission information.
  */
 
     unification_uapp::unification_uapp(action_name self) : contract(self) {}
+
+    void unification_uapp::initperm(const account_name& consumer_id) {
+
+        require_auth2(consumer_id,N(modreq));
+
+        userperms_t perms(_self, consumer_id);
+
+        auto itr = perms.find(consumer_id);
+        if (itr == perms.end()) {
+            //consumer pays for permissions storage
+            //initialise ipfs_hash and merkle_root with nn byte values
+            //to allow provider to update values without needing
+            //consumer's auth
+            perms.emplace(consumer_id /*payer*/, [&](auto &p_rec) {
+                p_rec.consumer_id = consumer_id;
+                p_rec.ipfs_hash = "0000000000000000000000000000000000000000000000";
+                p_rec.merkle_root = "0000000000000000000000000000000000000000000000";
+            });
+        }
+
+    }
+
+    void unification_uapp::updateperm(const account_name& consumer_id,
+                                      const std::string& ipfs_hash,
+                                      const std::string& merkle_root) {
+
+        require_auth(_self);
+        userperms_t perms(_self, consumer_id);
+
+        auto itr = perms.find(consumer_id);
+
+        eosio_assert(itr != perms.end(), "Permission relationship not found");
+
+        perms.modify(itr, 0 /*payer doesn't change*/, [&](auto &p_rec) {
+            p_rec.ipfs_hash = ipfs_hash;
+            p_rec.merkle_root = merkle_root;
+        });
+    }
 
     void unification_uapp::modifyperm(const account_name& user_account,
                                       const account_name& requesting_app,
@@ -46,48 +84,6 @@ namespace UnificationFoundation {
                 p_rec.permission_granted = level;
             });
         }
-    }
-
-    void unification_uapp::modifypermsg(const account_name& user_account,
-                                        const account_name& requesting_app,
-                                        const std::string& level,
-                                        const checksum256& digest,
-                                        const signature& sig,
-                                        const public_key& pub) {
-        print("modifypermsg()");
-        require_auth2(_self,N(modperms));
-        //require_auth(_self);
-
-        //Strange.... assert_recover_key only works if recover_key is run first!
-        int rec_key = recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
-        print_f("rec_key: %", rec_key);
-
-        assert_recover_key( (const checksum256 *)&digest, (char *)&sig, sizeof(sig), (char *)&pub, sizeof(pub) );
-
-        //TODO: check digest == checksum level
-//        const char* lv = level.c_str();
-//        print_f("lv: %", lv);
-//        checksum256 calc_hash;
-//        sha256( lv, sizeof(lv), &calc_hash );
-//        eosio_assert( calc_hash == digest, "invalid hash" );
-
-        // code, scope. Scope = requesting app.
-        unifperms perms(_self, requesting_app);
-
-        auto itr = perms.find(user_account);
-        if (itr == perms.end()) {
-            //no record for requesting app exists yet. Create one
-            perms.emplace(_self /*payer*/, [&](auto &p_rec) {
-                p_rec.user_account = user_account;
-                p_rec.permission_granted = std::stoi(level);
-            });
-        } else {
-            //requesting app already has record for user. Update its user perms
-            perms.modify(itr, _self /*payer*/, [&](auto &p_rec) {
-                p_rec.permission_granted =  std::stoi(level);
-            });
-        }
-
     }
 
     void unification_uapp::addschema(const std::string& schema,
@@ -235,6 +231,7 @@ namespace UnificationFoundation {
                                    const uint8_t& price) {
 
         require_auth2(_self,N(modreq));
+        //require_auth(_self);
 
         unifreqs data_requests(_self, _self);
 
@@ -246,6 +243,14 @@ namespace UnificationFoundation {
             d_rec.query = query;
             d_rec.price = price;
         });
+
+        //Call initperm in provider's smart contract, to init required RAM for permissions storage
+        action(
+                permission_level(_self, N(modreq)),
+                provider_name,
+                N(initperm),
+                _self
+        ).send();
 
     }
 
@@ -274,7 +279,6 @@ namespace UnificationFoundation {
     void unification_uapp::setrsakey(std::string rsa_key) {
 
         require_auth2(_self,N(modrsakey));
-        //require_auth(_self);
 
         unifrsakey _unifrsakey(_self, _self);
 

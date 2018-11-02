@@ -6,8 +6,6 @@
 #include <regex>
 #include <sstream>
 #include <eosiolib/eosio.hpp>
-//#include <eosiolib/time.hpp>
-//#include <eosiolib/asset.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/crypto.h>
 
@@ -19,18 +17,17 @@ namespace UnificationFoundation {
         explicit unification_uapp(action_name self);
 
         //@abi action
+        void initperm(const account_name& consumer_id);
+
+        //@abi action
+        void updateperm(const account_name& consumer_id,
+                        const std::string& ipfs_hash,
+                        const std::string& merkle_root);
+
+        //@abi action
         void modifyperm(const account_name& user_account,
                         const account_name& requesting_app,
                         const uint8_t& level);
-
-        //@abi action
-        void modifypermsg(const account_name& user_account,
-                          const account_name& requesting_app,
-                          const std::string& level,
-                          const checksum256& digest,
-                          const signature& sig,
-                          const public_key& pub);
-
 
         //@abi action
         void addschema(const std::string& schema,
@@ -96,6 +93,19 @@ namespace UnificationFoundation {
         //eosio::multi_index<N([name_match_abi]), [name_match_struct]> [anything];
         typedef eosio::multi_index<N(permrecords), permrecords> unifperms;
 
+        //@abi table userperms i64
+        struct userperms {
+            uint64_t consumer_id;
+            std::string ipfs_hash;
+            std::string merkle_root;
+
+            uint64_t primary_key() const { return consumer_id; }
+
+            EOSLIB_SERIALIZE(userperms, (consumer_id)(ipfs_hash)(merkle_root))
+        };
+
+        typedef eosio::multi_index<N(userperms), userperms> userperms_t;
+
         //@abi table dataschemas i64
         struct dataschemas {
             uint64_t pkey;
@@ -147,5 +157,5 @@ namespace UnificationFoundation {
 
     };
 
-    EOSIO_ABI(unification_uapp, (modifyperm)(modifypermsg)(addschema)(editschema)(setvers)(setschedule)(setpricesch)(setpriceadh)(setschema)(initreq)(updatereq)(setrsakey))
+    EOSIO_ABI(unification_uapp, (initperm)(updateperm)(modifyperm)(addschema)(editschema)(setvers)(setschedule)(setpricesch)(setpriceadh)(setschema)(initreq)(updatereq)(setrsakey))
 }
