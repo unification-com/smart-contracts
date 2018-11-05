@@ -277,6 +277,7 @@ namespace UnificationFoundation {
         data_requests.modify(itr, _self /*payer*/, [&](auto &d_rec) {
             d_rec.hash = hash;
             d_rec.aggr = aggr;
+            d_rec.ts_updated = ts_updated;
         });
 
     }
