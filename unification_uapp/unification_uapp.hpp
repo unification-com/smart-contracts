@@ -125,18 +125,17 @@ namespace UnificationFoundation {
             uint64_t pkey;
             uint64_t provider_name; //account name of provider's UApp smart contract
             uint64_t schema_id; //fkey link to provider's schema
+            uint64_t ts_created; //Unix timestamp of when a request is made
+            uint64_t ts_updated; //Unix timestamp of when a request is updated
             uint8_t req_type; //0 = scheduled, 1 = ad-hoc
             std::string query;
             uint8_t price;
             std::string hash;
             std::string aggr;
 
-            //TODO: Add timestamps for init, and update
-
-
             uint64_t primary_key() const { return pkey; }
 
-            EOSLIB_SERIALIZE(datareqs, (pkey)(provider_name)(schema_id)(req_type)(query)(price)(hash)(aggr))
+            EOSLIB_SERIALIZE(datareqs, (pkey)(provider_name)(schema_id)(ts_created)(ts_updated)(req_type)(query)(price)(hash)(aggr))
         };
 
         typedef eosio::multi_index<N(datareqs), datareqs> unifreqs;
