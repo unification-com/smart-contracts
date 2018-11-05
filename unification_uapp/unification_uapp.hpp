@@ -60,6 +60,8 @@ namespace UnificationFoundation {
         //@abi action
         void initreq(const account_name& provider_name,
                      const uint64_t& schema_id,
+                     const uint64_t& ts_created,
+                     const uint64_t& ts_updated,
                      const uint8_t& req_type,
                      const std::string& query,
                      const uint8_t& price);
@@ -68,6 +70,7 @@ namespace UnificationFoundation {
         void updatereq(const uint64_t& pkey,
                        const account_name& provider_name,
                        const std::string& hash,
+                       const uint64_t& ts_updated,
                        const std::string& aggr);
 
         //@abi action
