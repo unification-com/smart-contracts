@@ -39,7 +39,7 @@
  (table 14 14 anyfunc)
  (elem (i32.const 0) $__wasm_nullptr $_ZN21UnificationFoundation16unification_uapp10editschemaERKyRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEERKhSD_SD_SD_ $_ZN21UnificationFoundation16unification_uapp11setpriceschERKyRKh $_ZN21UnificationFoundation16unification_uapp9updatereqERKyS2_RKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEESB_ $_ZN21UnificationFoundation16unification_uapp9setschemaERKyRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE $_ZN21UnificationFoundation16unification_uapp8initpermERKy $_ZN21UnificationFoundation16unification_uapp9addschemaERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERKhSB_SB_SB_ $_ZN21UnificationFoundation16unification_uapp10modifypermERKyS2_RKh $_ZN21UnificationFoundation16unification_uapp11setpriceadhERKyRKh $_ZN21UnificationFoundation16unification_uapp7setversERKyRKh $_ZN21UnificationFoundation16unification_uapp10updatepermERKyRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEESB_ $_ZN21UnificationFoundation16unification_uapp9setrsakeyENSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE $_ZN21UnificationFoundation16unification_uapp11setscheduleERKyRKh $_ZN21UnificationFoundation16unification_uapp7initreqERKyS2_RKhRKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEES4_)
  (memory $0 1)
- (data (i32.const 4) "\90e\00\00")
+ (data (i32.const 4) "\d0e\00\00")
  (data (i32.const 16) "onerror\00")
  (data (i32.const 32) "eosio\00")
  (data (i32.const 48) "onerror action\'s are only valid from the \"eosio\" system account\00")
@@ -68,7 +68,8 @@
  (data (i32.const 1008) "addschema()\00")
  (data (i32.const 1024) "Permission relationship not found\00")
  (data (i32.const 1072) "0000000000000000000000000000000000000000000000\00")
- (data (i32.const 9520) "malloc_from_freed was designed to only be called after _heap was completely allocated\00")
+ (data (i32.const 1120) "0000000000000000000000000000000000000000000000000000000000000000\00")
+ (data (i32.const 9584) "malloc_from_freed was designed to only be called after _heap was completely allocated\00")
  (export "memory" (memory $0))
  (export "_ZeqRK11checksum256S1_" (func $_ZeqRK11checksum256S1_))
  (export "_ZeqRK11checksum160S1_" (func $_ZeqRK11checksum160S1_))
@@ -20581,7 +20582,7 @@
       (i32.const 20)
      )
     )
-    (i32.const 1072)
+    (i32.const 1120)
    )
   )
   (set_local $7
@@ -20837,7 +20838,7 @@
  )
  (func $malloc (param $0 i32) (result i32)
   (call $_ZN5eosio14memory_manager6mallocEm
-   (i32.const 1120)
+   (i32.const 1188)
    (get_local $0)
   )
  )
@@ -21082,7 +21083,7 @@
          )
         )
        )
-       (i32.const 9520)
+       (i32.const 9584)
       )
       (set_local $13
        (i32.add
@@ -21306,13 +21307,13 @@
    (block $label$1
     (br_if $label$1
      (i32.eqz
-      (i32.load8_u offset=9606
+      (i32.load8_u offset=9670
        (i32.const 0)
       )
      )
     )
     (set_local $7
-     (i32.load offset=9608
+     (i32.load offset=9672
       (i32.const 0)
      )
     )
@@ -21321,11 +21322,11 @@
    (set_local $7
     (current_memory)
    )
-   (i32.store8 offset=9606
+   (i32.store8 offset=9670
     (i32.const 0)
     (i32.const 1)
    )
-   (i32.store offset=9608
+   (i32.store offset=9672
     (i32.const 0)
     (tee_local $7
      (i32.shl
@@ -21376,7 +21377,7 @@
        )
       )
       (set_local $3
-       (i32.load offset=9608
+       (i32.load offset=9672
         (i32.const 0)
        )
       )
@@ -21384,7 +21385,7 @@
      (set_local $8
       (i32.const 0)
      )
-     (i32.store offset=9608
+     (i32.store offset=9672
       (i32.const 0)
       (get_local $3)
      )
@@ -21438,18 +21439,18 @@
      )
      (block $label$6
       (br_if $label$6
-       (i32.load8_u offset=9606
+       (i32.load8_u offset=9670
         (i32.const 0)
        )
       )
       (set_local $3
        (current_memory)
       )
-      (i32.store8 offset=9606
+      (i32.store8 offset=9670
        (i32.const 0)
        (i32.const 1)
       )
-      (i32.store offset=9608
+      (i32.store offset=9672
        (i32.const 0)
        (tee_local $3
         (i32.shl
@@ -21517,12 +21518,12 @@
        )
       )
       (set_local $6
-       (i32.load offset=9608
+       (i32.load offset=9672
         (i32.const 0)
        )
       )
      )
-     (i32.store offset=9608
+     (i32.store offset=9672
       (i32.const 0)
       (i32.add
        (get_local $6)
@@ -21782,7 +21783,7 @@
     (br_if $label$1
      (i32.lt_s
       (tee_local $2
-       (i32.load offset=9504
+       (i32.load offset=9572
         (i32.const 0)
        )
       )
@@ -21790,7 +21791,7 @@
      )
     )
     (set_local $3
-     (i32.const 9312)
+     (i32.const 9380)
     )
     (set_local $1
      (i32.add
@@ -21798,7 +21799,7 @@
        (get_local $2)
        (i32.const 12)
       )
-      (i32.const 9312)
+      (i32.const 9380)
      )
     )
     (loop $label$2
@@ -21890,7 +21891,7 @@
     (br_if $label$0
      (i32.eqz
       (tee_local $2
-       (i32.load offset=9612
+       (i32.load offset=9676
         (i32.const 0)
        )
       )

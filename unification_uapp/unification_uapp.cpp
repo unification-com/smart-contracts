@@ -38,7 +38,7 @@ namespace UnificationFoundation {
             perms.emplace(consumer_id /*payer*/, [&](auto &p_rec) {
                 p_rec.consumer_id = consumer_id;
                 p_rec.ipfs_hash = "0000000000000000000000000000000000000000000000";
-                p_rec.merkle_root = "0000000000000000000000000000000000000000000000";
+                p_rec.merkle_root = "0000000000000000000000000000000000000000000000000000000000000000";
             });
         }
 
