@@ -23,11 +23,6 @@ namespace UnificationFoundation {
                         const std::string& merkle_root);
 
         //@abi action
-        void modifyperm(const account_name& user_account,
-                        const account_name& requesting_app,
-                        const uint8_t& level);
-
-        //@abi action
         void addschema(const std::string& schema,
                        const uint8_t& schema_vers,
                        const uint8_t& schedule,
@@ -77,22 +72,6 @@ namespace UnificationFoundation {
         void setrsakey(std::string rsa_key);
 
     private:
-
-        //@abi table permrecords i64
-        struct permrecords {
-            uint64_t user_account; //user account ID
-            uint8_t permission_granted; //level of access a user has granted access.
-            //https://github.com/EOSIO/eos/blob/15953cc1be7a4d4ff168d0235dbaba9464033b70/libraries/chain/contracts/abi_serializer.cpp#L56
-
-            uint64_t primary_key() const { return user_account; }
-
-            EOSLIB_SERIALIZE(permrecords, (user_account)(permission_granted))
-
-        };
-
-        //https://github.com/EOSIO/eos/wiki/Persistence-API#multi-index-constructor
-        //eosio::multi_index<N([name_match_abi]), [name_match_struct]> [anything];
-        typedef eosio::multi_index<N(permrecords), permrecords> unifperms;
 
         //@abi table userperms i64
         struct userperms {
@@ -157,5 +136,5 @@ namespace UnificationFoundation {
 
     };
 
-    EOSIO_ABI(unification_uapp, (initperm)(updateperm)(modifyperm)(addschema)(editschema)(setvers)(setschedule)(setpricesch)(setpriceadh)(setschema)(initreq)(updatereq)(setrsakey))
+    EOSIO_ABI(unification_uapp, (initperm)(updateperm)(addschema)(editschema)(setvers)(setschedule)(setpricesch)(setpriceadh)(setschema)(initreq)(updatereq)(setrsakey))
 }
