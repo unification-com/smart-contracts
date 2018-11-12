@@ -3,8 +3,6 @@
  *  @copyright Paul Hodgson @ Unification Foundation
  */
 
-#include <regex>
-#include <sstream>
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/crypto.h>
