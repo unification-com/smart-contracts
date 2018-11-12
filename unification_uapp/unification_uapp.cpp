@@ -226,6 +226,8 @@ namespace UnificationFoundation {
 
     void unification_uapp::initreq(const account_name& provider_name,
                                    const uint64_t& schema_id,
+                                   const uint64_t& ts_created,
+                                   const uint64_t& ts_updated,
                                    const uint8_t& req_type,
                                    const std::string& query,
                                    const uint8_t& price) {
@@ -239,6 +241,8 @@ namespace UnificationFoundation {
             d_rec.pkey = data_requests.available_primary_key();
             d_rec.provider_name = provider_name;
             d_rec.schema_id = schema_id;
+            d_rec.ts_created = ts_created;
+            d_rec.ts_updated = ts_updated;
             d_rec.req_type = req_type;
             d_rec.query = query;
             d_rec.price = price;
@@ -257,6 +261,7 @@ namespace UnificationFoundation {
     void unification_uapp::updatereq(const uint64_t& pkey,
                                      const account_name& provider_name,
                                      const std::string& hash,
+                                     const uint64_t& ts_updated,
                                      const std::string& aggr) {
 
         require_auth2(provider_name,N(modreq));
@@ -272,6 +277,7 @@ namespace UnificationFoundation {
         data_requests.modify(itr, _self /*payer*/, [&](auto &d_rec) {
             d_rec.hash = hash;
             d_rec.aggr = aggr;
+            d_rec.ts_updated = ts_updated;
         });
 
     }
