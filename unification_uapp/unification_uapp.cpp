@@ -61,31 +61,6 @@ namespace UnificationFoundation {
         });
     }
 
-    void unification_uapp::modifyperm(const account_name& user_account,
-                                      const account_name& requesting_app,
-                                      const uint8_t& level) {
-
-        // make sure authorised by user. Only user can modify access to their data
-        require_auth(user_account);
-
-        // code, scope. Scope = requesting app.
-        unifperms perms(_self, requesting_app);
-
-        auto itr = perms.find(user_account);
-        if (itr == perms.end()) {
-            //no record for requesting app exists yet. Create one
-            perms.emplace(_self /*payer*/, [&](auto &p_rec) {
-                p_rec.user_account = user_account;
-                p_rec.permission_granted = level;
-            });
-        } else {
-            //requesting app already has record for user. Update its user perms
-            perms.modify(itr, _self /*payer*/, [&](auto &p_rec) {
-                p_rec.permission_granted = level;
-            });
-        }
-    }
-
     void unification_uapp::addschema(const std::string& schema,
                                      const uint8_t& schema_vers,
                                      const uint8_t& schedule,
