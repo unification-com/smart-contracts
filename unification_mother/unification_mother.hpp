@@ -22,12 +22,6 @@ namespace UnificationFoundation {
         //@abi action
         void invalidate(account_name uapp_contract_acc);
 
-        //@abi action
-        void isvalid(account_name uapp_contract_acc);
-
-        //@abi action
-        void getapp(account_name uapp_contract_acc);
-
     private:
 
         //@abi table validapps i64
@@ -60,5 +54,5 @@ namespace UnificationFoundation {
         typedef eosio::multi_index<N(binhashes), binhashes> bin_hashes;
     };
 
-    EOSIO_ABI(unification_mother, (addnew)(validate)(invalidate)(isvalid)(getapp))
+    EOSIO_ABI(unification_mother, (addnew)(validate)(invalidate))
 }

@@ -83,35 +83,4 @@ namespace UnificationFoundation {
         });
 
     }
-
-    void unification_mother::isvalid(const account_name uapp_contract_acc) {
-
-        // code, scope. Scope = requesting app.
-        valapps v_apps(_self, _self);
-
-        int is_valid = 0;
-
-        auto itr = v_apps.find(uapp_contract_acc);
-        if (itr != v_apps.end()) {
-            is_valid = itr->is_valid;
-        }
-
-        eosio::print("{\"app_account\":\"", name{uapp_contract_acc}, "\", \"is_valid\":",is_valid,"}");
-
-    }
-
-    void unification_mother::getapp(const account_name uapp_contract_acc) {
-
-        // code, scope. Scope = requesting app.
-        valapps v_apps(_self, _self);
-
-        auto itr = v_apps.find(uapp_contract_acc);
-        if (itr != v_apps.end()) {
-
-        }
-
-        //eosio::print("{\"app_account\":\"", name{app_account}, "\", \"is_valid\":",is_valid,"}");
-
-    }
-
 }
