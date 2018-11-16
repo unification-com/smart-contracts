@@ -22,11 +22,9 @@ namespace UnificationFoundation {
     unification_mother::unification_mother(action_name self) : contract(self) {}
 
     void unification_mother::addnew(const account_name acl_contract_acc,
-                                      const std::string acl_contract_hash,
-                                      const std::string rpc_server_ip,
-                                      const uint16_t rpc_server_port) {
+                                      const std::string ipfs_hash) {
 
-        eosio::print(name{_self}, " Called validate()");
+        eosio::print(name{_self}, " Called addnew()");
 
         // make sure authorised by unification
         eosio::require_auth(_self);
@@ -39,17 +37,13 @@ namespace UnificationFoundation {
             //no record for app exists yet. Create one
             v_apps.emplace(_self /*payer*/, [&](auto &v_rec) {
                 v_rec.acl_contract_acc = acl_contract_acc;
-                v_rec.acl_contract_hash = acl_contract_hash;
-                v_rec.rpc_server_ip = rpc_server_ip;
-                v_rec.rpc_server_port = rpc_server_port;
+                v_rec.ipfs_hash = ipfs_hash;
                 v_rec.is_valid = 1;
             });
         } else {
             //requesting app already has record. Update
             v_apps.modify(itr, _self /*payer*/, [&](auto &v_rec) {
-                v_rec.acl_contract_hash = acl_contract_hash;
-                v_rec.rpc_server_ip = rpc_server_ip;
-                v_rec.rpc_server_port = rpc_server_port;
+                v_rec.ipfs_hash = ipfs_hash;
                 v_rec.is_valid = 1;
             });
         }
