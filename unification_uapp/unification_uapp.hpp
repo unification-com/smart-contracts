@@ -1,5 +1,5 @@
 /**
- *  @file unification_acl.hpp
+ *  @file unification_uapp.hpp
  *  @copyright Paul Hodgson @ Unification Foundation
  */
 
