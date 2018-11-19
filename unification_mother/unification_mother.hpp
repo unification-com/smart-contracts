@@ -1,5 +1,5 @@
 /**
- *  @file unification_acl.hpp
+ *  @file unification_mother.hpp
  *  @copyright Paul Hodgson @ Unification Foundation
  */
 
@@ -13,32 +13,26 @@ namespace UnificationFoundation {
         explicit unification_mother(action_name self);
 
         //abi action
-        void addnew(account_name acl_contract_acc,
+        void addnew(account_name uapp_contract_acc,
                     std::string ipfs_hash);
 
         //@abi action
-        void validate(account_name acl_contract_acc);
+        void validate(account_name uapp_contract_acc);
 
         //@abi action
-        void invalidate(account_name acl_contract_acc);
-
-        //@abi action
-        void isvalid(account_name acl_contract_acc);
-
-        //@abi action
-        void getapp(account_name acl_contract_acc);
+        void invalidate(account_name uapp_contract_acc);
 
     private:
 
         //@abi table validapps i64
         struct validapps {
-            uint64_t acl_contract_acc;
+            uint64_t uapp_contract_acc;
             std::string ipfs_hash;
             uint8_t is_valid;
 
-            uint64_t primary_key() const { return acl_contract_acc; }
+            uint64_t primary_key() const { return uapp_contract_acc; }
 
-            EOSLIB_SERIALIZE(validapps, (acl_contract_acc)(ipfs_hash)(is_valid))
+            EOSLIB_SERIALIZE(validapps, (uapp_contract_acc)(ipfs_hash)(is_valid))
         };
 
         //https://github.com/EOSIO/eos/wiki/Persistence-API#multi-index-constructor
@@ -60,5 +54,5 @@ namespace UnificationFoundation {
         typedef eosio::multi_index<N(binhashes), binhashes> bin_hashes;
     };
 
-    EOSIO_ABI(unification_mother, (addnew)(validate)(invalidate)(isvalid)(getapp))
+    EOSIO_ABI(unification_mother, (addnew)(validate)(invalidate))
 }
